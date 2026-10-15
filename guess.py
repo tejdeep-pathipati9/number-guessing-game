@@ -39,7 +39,21 @@ attempt_limit = range_attempts_map[diffculty][1]
 
 # ---------- Choose a mode ----------
 # Goal: keep asking until the player picks Classic or Time Challenge.
+print("\nThe game modes are:\n")
+game_modes = {1: "Classic", 2: "Time Challenge"}
 
+m = len(game_modes)
+
+for index, mode in game_modes.items():
+    print(f"  {index}.{mode}")
+
+mode = input("\nChoose a mode from above options:").strip()
+
+while not mode.isdigit() or not int(mode) in game_modes:
+    mode = input(f"Invalid game mode! Choose a number between 1 to {m}: ").strip()
+
+mode = int(mode)
+selected_mode = game_modes[mode]
 
 # ---------- Set up the round ----------
 # Goal: pick the secret number (use DEBUG_SECRET when it is not None) and start the clock.

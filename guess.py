@@ -64,6 +64,33 @@ else:
     secret_number = DEBUG_SECRET
 # ---------- Guess loop ----------
 # Goal: keep asking for guesses until the player wins, runs out of attempts, or runs out of time.
+attempts_used = 0
+
+if selected_mode == "Classic":
+    while attempts_used < attempt_limit:
+        number = input("Guess the number: ").strip()
+
+        while not number.isdigit() or int(number) not in range(1, end_range + 1):
+            number = input(f"Invalid input! Please enter a number between 1 and {end_range}: ").strip()
+
+        number = int(number)
+        attempts_used += 1
+
+
+        if number > secret_number:
+            print("You guessed too high!")
+
+        elif number < secret_number:
+            print("You guessed too low!") 
+
+        else:
+            print(f"You guessed the number correctly in {attempts_used} attempts!")
+            break
+
+        print(f"Attempts remaining: {attempt_limit - attempts_used}")
+
+# else Time Challenge 
+
 
 # ---------- End of round ----------
 # Goal: show the result that matches how the round ended.

@@ -58,6 +58,10 @@ selected_mode = game_modes[mode]
 # ---------- Set up the round ----------
 # Goal: pick the secret number (use DEBUG_SECRET when it is not None) and start the clock.
 
+if DEBUG_SECRET is None:
+    secret_number = random.randint(1, end_range)
+else:
+    secret_number = DEBUG_SECRET
 # ---------- Guess loop ----------
 # Goal: keep asking for guesses until the player wins, runs out of attempts, or runs out of time.
 

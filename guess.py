@@ -1,8 +1,8 @@
 """
-A CLI based Number Guessing Game
+A CLI based Number Guessing Game.
 
 Players guess a randomly chosen number.
-The game supports difficulty levels, attempt limits and differnt game modes.
+The game supports difficulty levels, attempt limits, and different game modes.
 """
 
 import random
@@ -13,9 +13,9 @@ DEBUG_SECRET = None   # For testing, set to a number such as 42. Set back to Non
 TIME_LIMIT = 60       # Seconds allowed in Time Challenge mode
 
 print("Welcome to the Number Guessing Game")
-# ---------- Choose a level ----------
-# Goal: keep asking until the player picks a valid level, then set the range and attempt limit.
 
+# ---------- Choose a level ----------
+# Difficulty selection
 difficulty_levels = {
     1: "Easy", 
     2: "Medium", 
@@ -38,6 +38,7 @@ selected_choice = input(
     "\nTo get started please pick a difficulty level from the options above: "
 ).strip()
 
+# Keep asking until a valid difficulty level is chosen
 while not selected_choice.isdigit() or int(selected_choice) not in difficulty_levels:
     selected_choice = input(
         f"Invalid option! Choose a number between 1 to {num_difficulty_levels}: "
@@ -50,8 +51,7 @@ end_range = range_attempts_map[difficulty][0]
 attempt_limit = range_attempts_map[difficulty][1]
 
 # ---------- Choose a mode ----------
-# Goal: keep asking until the player picks Classic or Time Challenge.
-
+# Game Mode selection
 game_modes = {
     1: "Classic", 
     2: "Time Challenge",
@@ -65,6 +65,7 @@ for index, mode in game_modes.items():
 
 mode = input("\nChoose a mode from above options:").strip()
 
+# Keep asking until a valid game mode is selected
 while not mode.isdigit() or int(mode) not in game_modes:
     mode = input(
         f"Invalid game mode! Choose a number between 1 to {num_game_modes}: "
@@ -74,22 +75,22 @@ mode = int(mode)
 selected_mode = game_modes[mode]
 
 # ---------- Set up the round ----------
-# Goal: pick the secret number (use DEBUG_SECRET when it is not None) and start the clock.
-
+# Generate a random number unless a fixed secret is set for testing
 if DEBUG_SECRET is None:
     secret_number = random.randint(1, end_range)
 else:
     secret_number = DEBUG_SECRET
 
 # ---------- Guess loop ----------
-# Goal: keep asking for guesses until the player wins, runs out of attempts, or runs out of time.
-
+# Classic Mode
 attempts_used = 0
 won = False
 
 if selected_mode == "Classic":
     while attempts_used < attempt_limit:
         guess = input("Guess the number: ").strip()
+
+        # Keep asking for a valid guess without using an attempt
         while not guess.isdigit() or int(guess) not in range(1, end_range + 1):
             guess = input(
                 f"Invalid input! Please enter a number between 1 and {end_range}: "
@@ -105,26 +106,30 @@ if selected_mode == "Classic":
             print("You guessed too low!") 
 
         else:
-            print(f"You guessed the number correctly in {attempts_used} attempts!")
+            attempt_word = "attempt" if attempts_used == 1 else "attempts"
+            print(f"You guessed the number correctly in {attempts_used} {attempt_word}!")
             won = True
             break
 
         print(f"Attempts remaining: {attempt_limit - attempts_used}")
 
+# Time Challenge Mode
 else:
+    # Start the timer once so it doesn't reset after each guess
     start_time = time.monotonic()
 
     while attempts_used < attempt_limit:
         elapsed = time.monotonic() - start_time
         remaining = max(0, TIME_LIMIT - elapsed)
-        print(f"Time remaining: {round(remaining)} seconds")
+        print(f"Time remaining: {remaining:.1f} seconds")
 
         if remaining <= 0:
             print(f"Time's up! The secret number was {secret_number}.")
             break
 
         guess = input("Guess the number: ").strip()
-    
+
+        # Keep asking for a valid guess without using an attempt
         while not guess.isdigit() or int(guess) not in range(1, end_range + 1):
             guess = input(
                 f"Invalid input! Please enter a number between 1 and {end_range}: "
@@ -145,14 +150,13 @@ else:
             print("You guessed too low!") 
     
         else:
-            print(f"You guessed the number correctly in {attempts_used} attempts!")
+            attempt_word = "attempt" if attempts_used == 1 else "attempts"
+            print(f"You guessed the number correctly in {attempts_used} {attempt_word}!")
             won = True
             break
     
         print(f"Attempts remaining: {attempt_limit - attempts_used}")
 
-# ---------- End of round ----------
-# Goal: show the result that matches how the round ended.
-
+# Reveal the secret number if the player runs out of attempts
 if not won and attempts_used >= attempt_limit:
     print(f"You ran out of attempts! The secret number was {secret_number}.")
